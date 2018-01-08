@@ -25,8 +25,12 @@
         </div>
         <div class="category-titles">
             <div class="category-heading">
-                    <h2 class='category-intro available'> Categories Available </h2>
-                    <hr>
+                <h2 class='category-intros available'> Categories Available </h2>
+                <a href="{{ url_for('new_category') }}" class="me button-press new" id="add-btns">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                        Add Category
+                </a>
+                <hr>
             </div>
             <div class="title">
                 <h2 class=" category-intro available item-head"> {{ category.name }}
@@ -42,9 +46,19 @@
         <div class="card-section">
             <div class="card-container">
                  {% for category in categories %}
-                <a class="trial cards group" href="{{ url_for('category_item', category_id=category.id) }}">
-                    {{ category.name }}
-                </a>
+                    <div class="trial cards group special" >
+                       <a  class="main-ctrl" href="{{ url_for('category_item', category_id=category.id) }}">
+                            {{ category.name }}
+                       </a>
+                        <div class="side-ctrl">
+                            <a id="side-edit" href="{{ url_for('edit_catalog', category_id=category.id) }}">
+                                Edit Item
+                            </a>
+                            <a id="side-delete" href="{{ url_for('delete_category', category_id=category.id) }}" >
+                                Delete
+                            </a>
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
 

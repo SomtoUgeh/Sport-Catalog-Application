@@ -336,7 +336,7 @@ def sport_category():
         order_by(desc(SportItem.id)).limit(6)
     if 'user_id' not in login_session:
         return render_template(
-            'publichomepage.html', categories=categories, items=items)
+            'homepage.html', categories=categories, items=items)
     else:
         return render_template(
             'homepage.html', categories=categories, items=items)

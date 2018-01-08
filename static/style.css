@@ -212,6 +212,10 @@ nav{
     font-size: 2rem;
 }
 
+.category-intros{
+    display: inline-block;
+}
+
 .category-message {
     margin: 0;
     padding-top: 0;
@@ -225,6 +229,10 @@ nav{
     width: 100%;
     margin: 0 auto;
     padding: 0 30px;
+}
+
+.category-heading {
+    display: block;
 }
 
 .category-heading hr {
@@ -279,6 +287,10 @@ nav{
 
 #add-btn {
     margin-top: 0;
+}
+
+#add-btns{
+    display: inline-block;
 }
 
 .card-section {
@@ -350,6 +362,46 @@ nav{
     font-size: 1.125em;
     line-height: 13px;
     font-family: "Akkurat-Light", sans-serif;
+}
+
+.special {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+}
+
+.side-ctrl {
+   font-size: 15px;
+    margin-left: 4em;
+    display: grid;
+    border-left: 1px solid #e6dee5;
+    text-decoration: none;
+}
+
+.main-ctrl {
+    text-decoration: none;
+    color: black;
+    margin-left: 1em;
+}
+
+#side-delete {
+  text-decoration: none;
+    position: relative;
+    top: 10px;
+    color: #956e6e;
+}
+
+#side-edit {
+    text-decoration: none;
+    position: relative;
+    top: -10px;
+    color: #956e6e;
+}
+
+#side-delete:hover,
+#side-edit:hover {
+    text-decoration: underline;
+
 }
 /* Homepage content ends here*/
 
@@ -601,3 +653,4 @@ form input::placeholder {
     font-family: "CircularStd-Book", sans-serif;
 }
 /* Flash message styling ends */
+
