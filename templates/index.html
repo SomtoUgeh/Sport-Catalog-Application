@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+    <section style="background: url('../static/fine.png') center no-repeat; background-size: cover;">
+        <div class="index-intro">
+            <div class="main block">
+                <h2 class=intro-text> Hello there, <br>  Welcome to Catalog Store. </h2> <hr>
+                <p class="intro-message">
+                    We have a wonderful collection of Sporting Equipments.
+                    It is categorised based on different sports.
+                    We encourage you to <strong class="strong"> Check out our Equipments </strong>
+                    or better still, <strong class="strong"> Sign up </strong> to make your own
+                    collection of equipments and categorize as you see fit.
+                </p>
+                <div class=button-display>
+                    <a class="me" href="{{ url_for('sport_category') }}"> Continue to Equipments </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

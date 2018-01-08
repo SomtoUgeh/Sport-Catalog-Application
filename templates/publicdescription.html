@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+<section>
+    <div class="description-heading">
+        <div id="edit-section">
+            <h2 class='description-intro-text'> {{ item.name }} </h2>
+        </div>
+        <div class="description-main">
+            <p class="description-intro-message">
+                {{ item.description }}
+            </p>
+            <a class="me button-press" id="description-final" href="{{ url_for('category_item', category_id=category.id) }}">
+                Return to Store
+            </a>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

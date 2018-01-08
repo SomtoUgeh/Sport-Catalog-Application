@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+<section>
+    <div class="edit-heading">
+        <h2 class='edit-intro-text'> Edit {{ item.name }}  <br> </h2>
+        <p class="edit-intro-message"> Make changes to the description of {{ item.name }}. </p>
+        <div class="add-main">
+            <form action="{{ url_for('edit_item', category_id=item.sport_id, item_id=item.id) }}" method="post">
+                <div class="clearfix">
+                    <div class="fname form-field">
+                        <label for="">Title *</label>
+                        <input type="text" name="name" id="" class="form-control" placeholder=" {{ item.name }} ">
+                    </div>
+                    <div class="fname form-field">
+                        <label for="add-description"> Description * </label>
+                        <textarea name="description" id="add-description" class="form-control">
+                            {{ item.description }}
+                        </textarea>
+                    </div>
+                    <div class="fname form-field">
+                        <label for="sport"> Category * </label>
+                        <select name="category" id="sport" class="form-control">
+                            {% for category in categories %}
+                            <option value="{{ category.name }}">
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input class="me button-press submit" type="submit" value="Edit Item">
+                    <a href="{{ url_for('category_item', category_id=item.sport_id) }}" class="me button-press" id="cancel"> Cancel </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

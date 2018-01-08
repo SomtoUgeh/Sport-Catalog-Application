@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+<section>
+    <div class="add-welcome">
+        <h2 class='add-intro-text'> Add new item to {{ category.name }}<br> </h2>
+        <p class="add-intro-message signup-text"> Fill in this form to add a new item</p>
+        <div class="add-main">
+            <form action="{{ url_for('newitem', category_id=category.id)}}" method="post">
+                <div class="clearfix">
+                    <div class="fname form-field">
+                        <label for="">Title *</label>
+                        <input type="text" name="name" id="" class="form-control" placeholder="Add item to {{ category.name }}">
+                    </div>
+                    <div class="fname form-field">
+                        <label for="add-description"> Description * </label>
+                        <textarea name="description" id="add-description" class="form-control" placeholder="Item Description"> </textarea>
+                    </div>
+                    <div class="fname form-field">
+                        <label for="sport"> Category * </label>
+                        <select name="Sport" id="sport" class="form-control">
+                            {% for categoryy in categories %}
+                            <option value="{{ categoryy.name }}">
+                                {{ categoryy.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input class="me button-press submit" id="submit" type="submit" value="Add Item">
+                    <a href="{{ url_for('category_item', category_id=category.id) }}" class="me button-press" id="cancel"> Cancel </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+<section>
+    <div class="delete-heading">
+        <div id="delete-section">
+            <h2 class='delete-intro-text'> Are you sure you want to delete <br> {{ item.name }} ? </h2>
+            <form action="{{ url_for('delete_item', category_id=item.sport_id, item_id=item.id)}}" method="post">
+                <input type="submit" class="me button-press new" id="delete-submit" value="Delete Item">
+                <a class="me button-press" id="cancel" href="{{ url_for('category_item', category_id=item.sport_id)}}">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class = 'flash'>
+                <ul>
+                {% for message in messages %}
+                    <li> <strong> {{ message }} </strong> </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+   <section class="homepage-welcome">
+        <div class='categories'>
+            <h2 class='category-intro'> Hello there, <br>  Welcome to our Store. </h2>
+            <p class='category-message'>
+                We have a wonderful collection of Sport Equipments.
+                It is grouped based <br> on different sports.
+                Categorize your collection as you see fit.
+            </p>
+        </div>
+        <div class="category-titles">
+            <div class="category-heading">
+                    <h2 class='category-intro available'> Categories Available </h2>
+                    <hr>
+            </div>
+            <div class="titles">
+                <h2 class="category-intro available item-head"> Latest items added </h2>
+                <hr>
+            </div>
+        </div>
+        <div class="card-section">
+            <div class="card-container">
+                {% for category in categories %}
+                    <a class="trial cards group" href="{{ url_for('category_item', category_id=category.id) }}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+            <div class="add-item">
+                {% for item in items %}
+                <a class="trial cards add"> {{ item.name }} </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% include 'footer.html' %}
+{% endblock %}

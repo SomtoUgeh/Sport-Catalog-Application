@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
+
+<section>
+    <div class="description-heading">
+        <div id="edit-section">
+                <h2 class=description-intro-text> {{ item.name }} </h2>
+                <a class="me button-press new" id="description-edit" href="{{ url_for('edit_item', category_id=category.id, item_id=item.id) }}">
+                    Edit Item
+                </a>
+        </div>
+        <div class="description-main">
+            <p class="description-intro-message">
+                {{ item.description }}
+            </p>
+            <a class="me button-press" id="description-final" href="{{ url_for('delete_item', category_id=category.id, item_id=item.id) }}" > Delete </a>
+            <a class="me button-press" id="description-finally" href="{{ url_for('category_item', category_id=category.id) }}"> Return to Store </a>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}
