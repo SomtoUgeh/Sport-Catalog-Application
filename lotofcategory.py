@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from models import Base, User, Sport, SportItem
 
-engine = create_engine('sqlite:///sportcatalog.db')
+engine = create_engine('sqlite:///sportcategory.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
@@ -19,7 +19,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Creating a dummy User
-User1 = User(name="Somto Ugeh", email="somtougeman@gmail.com",
+User1 = User(name="Admin", email="admin@catalog.com",
              image='https://cdn-images-1.medium.com/max/1200/1*8I9Bsu69nfnzYERIeHQo3Q@2x.jpeg')
 session.add(User1)
 session.commit()

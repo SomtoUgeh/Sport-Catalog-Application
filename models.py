@@ -65,5 +65,5 @@ class SportItem(Base):
         }
 
 
-engine = create_engine('sqlite:///sportcatalog.db')
+engine = create_engine('sqlite:///sportcategory.db')
 Base.metadata.create_all(engine)

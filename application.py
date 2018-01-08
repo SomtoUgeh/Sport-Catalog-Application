@@ -1,5 +1,6 @@
 from flask import Flask, render_template, \
     request, redirect, jsonify, url_for, flash, make_response
+from functools import wraps
 
 # Session works as a dictionary storing
 # information for the longevity of a user's session with the server
@@ -22,7 +23,7 @@ import requests
 app = Flask(__name__)
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///sportcatalog.db')
+engine = create_engine('sqlite:///sportcategory.db')
 Base.metadata.bind = engine
 
 CLIENT_ID = json.loads(open('client_secrets.json',
@@ -329,7 +330,6 @@ def disconnect():
 
 # Route for the category page
 @app.route('/sport/catalog')
-@login_required
 def sport_category():
     categories = session.query(Sport).all()
     items = session.query(SportItem).\
@@ -400,7 +400,6 @@ def delete_category(category_id):
 
 # Route to display the items in each category
 @app.route('/sport/<int:category_id>/item')
-@login_required
 def category_item(category_id):
     categories = session.query(Sport).all()
     category_heading = session.query(Sport).filter_by(id=category_id).one()
@@ -415,7 +414,6 @@ def category_item(category_id):
 
 # Route leading to the description of each item
 @app.route('/sport/<int:category_id>/<int:item_id>/description')
-@login_required
 def itemDescription(category_id, item_id):
     category = session.query(Sport).filter_by(id=category_id).one()
     item = session.query(SportItem).filter_by(id=item_id).one()

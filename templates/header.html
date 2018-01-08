@@ -19,7 +19,7 @@
                     {% if 'username' not in session %}
                         <a href="{{ url_for('login') }}" class="me button-press"> Login </a>
                     {% else %}
-                         <a href="{{url_for('gdisconnect')}}" class="me button-press"> Sign Out </a>
+                         <a href="{{url_for('disconnect')}}" class="me button-press"> Sign Out </a>
                     {% endif %}
                 </div>
             </div>
