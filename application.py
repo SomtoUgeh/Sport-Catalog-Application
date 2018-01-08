@@ -46,6 +46,16 @@ def login():
     return render_template('login.html', STATE=login_session['state'])
 
 
+# login_required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # Creating a new User
 def create_user(login_session):
     newUser = User(
@@ -152,6 +162,7 @@ def fbconnect():
     return output
 
 
+# Disconnecting a facebook User
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
@@ -163,6 +174,7 @@ def fbdisconnect():
     return "you have been logged out"
 
 
+# Adding google plus login
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -255,7 +267,7 @@ def gconnect():
     return output
 
 
-# Disconnecting a User
+# Disconnecting a google User
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
@@ -314,17 +326,77 @@ def disconnect():
 
 # Route for the category page
 @app.route('/sport/catalog')
+@login_required
 def sport_category():
     categories = session.query(Sport).all()
     items = session.query(SportItem).order_by(desc(SportItem.id)).limit(6)
     if 'username' not in login_session:
-        return render_template('publichomepage.html', categories=categories, items=items)
+        return render_template(
+            'publichomepage.html', categories=categories, items=items)
     else:
-        return render_template('homepage.html', categories=categories, items=items)
+        return render_template(
+            'homepage.html', categories=categories, items=items)
+
+
+# Route for creating a new Category
+@app.route('/sport/catalog/new', methods=['GET', 'POST'])
+@login_required
+def new_category():
+    if request.method == 'POST':
+        newCategory = Sport(
+            name=request.form['name'], user_id=login_session['user_id'])
+        session.commit()
+        flash('New Category %s successfully created' % newCategory.name)
+        return redirect(url_for(sport_category))
+    else:
+        return render_template('newCategory.html')
+
+
+# Route for editing Category
+@app.route('/sport/<int:category_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_catalog(category_id):
+    editedCategory = session.query(Sport).filter_by(id=category_id).one()
+    if editedCategory.user_id != login_session['user_id']:
+        return "<script> function myFunction() {" \
+               "alert('You are not authorized to edit this item. " \
+               "Please create your own item before you proceed.');" \
+               "}" \
+               "</script>" \
+               "<body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editedCategory.name = request.form['name']
+            flash(' %s has successfully been edited' % editedCategory.name)
+            return redirect(sport_category)
+    else:
+        return render_template('editcatalog.html')
+
+
+# Route for deleting Category
+@app.route('/sport/<int:category_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_category(category_id):
+    deleteCategory = session.query(Sport).filter_by(id=category_id).one()
+    if deleteCategory.user_id != login_session['user_id']:
+        return "<script> function myFunction() {" \
+               "alert('You are not authorized to edit this item. " \
+               "Please create your own item before you proceed.');" \
+               "}" \
+               "</script>" \
+               "<body onload='myFunction()'>"
+    if request.method == "POST":
+        session.delete(deleteCategory)
+        session.commit()
+        flash('%s successfully deleted' % deleteCategory.name)
+        return redirect(sport_category)
+    else:
+        return render_template('deletecategory.html')
 
 
 # Route to display the items in each category
 @app.route('/sport/<int:category_id>/item')
+@login_required
 def category_item(category_id):
     categories = session.query(Sport).all()
     category_heading = session.query(Sport).filter_by(id=category_id).one()
@@ -339,6 +411,7 @@ def category_item(category_id):
 
 # Route leading to the description of each item
 @app.route('/sport/<int:category_id>/<int:item_id>/description')
+@login_required
 def itemDescription(category_id, item_id):
     category = session.query(Sport).filter_by(id=category_id).one()
     item = session.query(SportItem).filter_by(id=item_id).one()
@@ -350,9 +423,8 @@ def itemDescription(category_id, item_id):
 
 # Route for adding a new item to a category
 @app.route('/sport/<int:category_id>/item/new', methods=['GET', 'POST'])
+@login_required
 def newitem(category_id):
-    if 'username' not in login_session:
-        return redirect(url_for('login'))
     categories = session.query(Sport).all()
     category_heading = session.query(Sport).filter_by(id=category_id).one()
     if login_session['user_id'] != category_heading.user_id:
@@ -375,9 +447,8 @@ def newitem(category_id):
 
 # Route for editing an item in a category
 @app.route('/sport/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_item(category_id, item_id):
-    if 'username' not in login_session:
-        return redirect(url_for('login'))
     categories = session.query(Sport).all()
     category = session.query(Sport).filter_by(id=category_id).one()
     item = session.query(SportItem).filter_by(id=item_id).one()
@@ -403,9 +474,8 @@ def edit_item(category_id, item_id):
 
 # Route for delete an item
 @app.route('/sport/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
+@login_required
 def delete_item(category_id, item_id):
-    if 'username' not in login_session:
-        return redirect(url_for('login'))
     categories = session.query(Sport).all()
     category = session.query(Sport).filter_by(id=category_id).one()
     item = session.query(SportItem).filter_by(id=item_id).one()
