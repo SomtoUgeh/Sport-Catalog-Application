@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main.html' %}
+{% block content %}
+{% include 'header.html' %}
 
-</body>
-</html>
+<section>
+    <div class="edit-heading">
+        <h2 class='edit-intro-text'> Edit {{ category.name }}  <br> </h2>
+        <p class="edit-intro-message"> Make changes to the description of {{ category.name }}. </p>
+        <div class="add-main">
+            <form action="{{ url_for('edit_catalog', category_id=category.id) }}" method="post">
+                <div class="clearfix">
+                    <div class="fname form-field">
+                        <label for="">Title *</label>
+                        <input type="text" name="name" id="" class="form-control" placeholder=" {{ category.name }} ">
+                    </div>
+                    <input class="me button-press submit" type="submit" value="Edit Item">
+                    <a href="{{ url_for('sport_category' }}" class="me button-press" id="cancel"> Cancel </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

@@ -25,7 +25,8 @@ app = Flask(__name__)
 engine = create_engine('sqlite:///sportcatalog.db')
 Base.metadata.bind = engine
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json',
+                            'r').read())['web']['client_id']
 APPLICATION_NAME = 'Sport Catalog App'
 
 DBSession = sessionmaker(bind=engine)
@@ -41,7 +42,8 @@ def home():
 
 @app.route('/login')
 def login():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase
+                                  + string.digits) for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=login_session['state'])
 
@@ -64,7 +66,8 @@ def create_user(login_session):
         image=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(
+        email=login_session['email']).one()
     return user.id
 
 
@@ -329,8 +332,9 @@ def disconnect():
 @login_required
 def sport_category():
     categories = session.query(Sport).all()
-    items = session.query(SportItem).order_by(desc(SportItem.id)).limit(6)
-    if 'username' not in login_session:
+    items = session.query(SportItem).\
+        order_by(desc(SportItem.id)).limit(6)
+    if 'user_id' not in login_session:
         return render_template(
             'publichomepage.html', categories=categories, items=items)
     else:
@@ -370,7 +374,7 @@ def edit_catalog(category_id):
             flash(' %s has successfully been edited' % editedCategory.name)
             return redirect(sport_category)
     else:
-        return render_template('editcatalog.html')
+        return render_template('editcatalog.html', category=editedCategory)
 
 
 # Route for deleting Category
@@ -391,7 +395,7 @@ def delete_category(category_id):
         flash('%s successfully deleted' % deleteCategory.name)
         return redirect(sport_category)
     else:
-        return render_template('deletecategory.html')
+        return render_template('deletecategory.html', category=deleteCategory)
 
 
 # Route to display the items in each category
