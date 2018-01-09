@@ -43,10 +43,12 @@ def home():
 
 @app.route('/login')
 def login():
-    state = ''.join(random.choice(string.ascii_uppercase
-                                  + string.digits) for x in xrange(32))
+    state = ''.join(random.choice(
+        string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', STATE=login_session['state'])
+    return render_template(
+        'login.html', STATE=login_session['state'])
 
 
 # login_required decorator
@@ -74,14 +76,16 @@ def create_user(login_session):
 
 # Getting User info
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User)\
+        .filter_by(id=user_id).one()
     return user
 
 
 # Getting User info
 def getUserID(email):
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = session.query(User)\
+            .filter_by(email=email).one()
         return user.id
     except:
         return None
@@ -91,14 +95,19 @@ def getUserID(email):
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response = make_response(
+            json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
     print "access token received %s " % access_token
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_id = json.loads(
+        open('fb_client_secrets.json', 'r')
+            .read())['web']['app_id']
+    app_secret = json.loads(
+        open('fb_client_secrets.json', 'r')
+            .read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?' \
           'grant_type=fb_exchange_token&client_id=%s&client_secret=%s' \
           '&fb_exchange_token=%s' % (app_id, app_secret, access_token)
@@ -109,15 +118,22 @@ def fbconnect():
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
     '''
-        Due to the formatting for the result from the server token exchange we have to
-        split the token first on commas and select the first index which gives us the key : value
-        for the server access token then we split it on colons to pull out the actual token value
-        and replace the remaining quotes with nothing so that it can be used directly in the graph
+        Due to the formatting for the result 
+        from the server token exchange we have to
+        split the token first on commas and 
+        select the first index which gives us the key : value
+        for the server access token then we 
+        split it on colons to pull out the 
+        actual token value
+        and replace the remaining quotes 
+        with nothing so that it can be used 
+        directly in the graph
         api calls
     '''
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.8/' \
+          'me?access_token=%s&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     print 'result is %s' % result
@@ -172,7 +188,9 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
+    url =\
+        'https://graph.facebook.com/%s/permissions?access_token=%s' \
+        % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -203,7 +221,8 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+    url = \
+        ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
@@ -233,7 +252,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -281,7 +301,9 @@ def gdisconnect():
             json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    url = \
+        'https://accounts.google.com/o/oauth2/revoke?token=%s' \
+        % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -293,7 +315,8 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
 
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response = make_response(
+            json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
@@ -322,10 +345,12 @@ def disconnect():
         del login_session['user_id']
         del login_session['provider']
         flash("You have successfully been logged out.")
-        return redirect(url_for('sport_category', categories=categories))
+        return redirect(
+            url_for('sport_category', categories=categories))
     else:
         flash("You have not been logged in")
-        return redirect(url_for('sport_category', categories=categories))
+        return redirect(
+            url_for('sport_category', categories=categories))
 
 
 # Route for the category page
@@ -349,9 +374,10 @@ def new_category():
     if request.method == 'POST':
         newCategory = Sport(
             name=request.form['name'], user_id=login_session['user_id'])
+        session.add(newCategory)
         session.commit()
         flash('New Category %s successfully created' % newCategory.name)
-        return redirect(url_for(sport_category))
+        return redirect(url_for('sport_category'))
     else:
         return render_template('newCategory.html')
 
@@ -372,7 +398,7 @@ def edit_catalog(category_id):
         if request.form['name']:
             editedCategory.name = request.form['name']
             flash(' %s has successfully been edited' % editedCategory.name)
-            return redirect(sport_category)
+            return redirect(url_for('sport_category'))
     else:
         return render_template('editcatalog.html', category=editedCategory)
 
@@ -393,7 +419,7 @@ def delete_category(category_id):
         session.delete(deleteCategory)
         session.commit()
         flash('%s successfully deleted' % deleteCategory.name)
-        return redirect(sport_category)
+        return redirect(url_for('sport_category'))
     else:
         return render_template('deletecategory.html', category=deleteCategory)
 
@@ -406,10 +432,17 @@ def category_item(category_id):
     item = session.query(SportItem).filter_by(sport_id=category_id).all()
     total = len(item)
     if 'username' not in login_session:
-        return render_template('publicitem.html', category=category_heading, categories=categories, item=item,
+        return render_template('publicitem.html',
+                               category=category_heading,
+                               categories=categories,
+                               item=item,
                                total=total)
     else:
-        return render_template('items.html', category=category_heading, categories=categories, item=item, total=total)
+        return render_template('items.html',
+                               category=category_heading,
+                               categories=categories,
+                               item=item,
+                               total=total)
 
 
 # Route leading to the description of each item
@@ -418,9 +451,13 @@ def itemDescription(category_id, item_id):
     category = session.query(Sport).filter_by(id=category_id).one()
     item = session.query(SportItem).filter_by(id=item_id).one()
     if 'username' not in login_session:
-        return render_template('publicdescription.html', category=category, item=item)
+        return render_template('publicdescription.html',
+                               category=category,
+                               item=item)
     else:
-        return render_template('description.html', category=category, item=item)
+        return render_template('description.html',
+                               category=category,
+                               item=item)
 
 
 # Route for adding a new item to a category
@@ -437,14 +474,20 @@ def newitem(category_id):
                "</script>" \
                "<body onload='myFunction()'>"
     if request.method == 'POST':
-        newItem = SportItem(name=request.form['name'], description=request.form['description'],
-                            sport_id=category_id, user_id=category_heading.user_id)
+        newItem = SportItem(name=request.form['name'],
+                            description=request.form['description'],
+                            sport_id=category_id,
+                            user_id=category_heading.user_id)
         session.add(newItem)
         session.commit()
-        flash('%s Successfully added to %s ' % (newItem.name, category_heading.name))
-        return redirect(url_for('sport_category', categories=categories))
+        flash('%s Successfully added to %s '
+              % (newItem.name, category_heading.name))
+        return redirect(
+            url_for('sport_category', categories=categories))
     else:
-        return render_template('additems.html', categories=categories, category=category_heading)
+        return render_template('additems.html',
+                               categories=categories,
+                               category=category_heading)
 
 
 # Route for editing an item in a category
@@ -469,9 +512,13 @@ def edit_item(category_id, item_id):
         session.add(item)
         session.commit()
         flash('%s Successfully Edited ' % item.name)
-        return redirect(url_for('sport_category', categories=categories))
+        return redirect(url_for('sport_category',
+                                categories=categories))
     else:
-        return render_template('edititem.html', item=item, categories=categories, category=category)
+        return render_template('edititem.html',
+                               item=item,
+                               categories=categories,
+                               category=category)
 
 
 # Route for delete an item
@@ -492,23 +539,28 @@ def delete_item(category_id, item_id):
         session.delete(item)
         session.commit()
         flash('%s Successfully Deleted ' % item.name)
-        return redirect(url_for('sport_category', categories=categories))
+        return redirect(url_for('sport_category',
+                                categories=categories))
     else:
-        return render_template('delete.html', category=category, item=item)
+        return render_template('delete.html',
+                               category=category,
+                               item=item)
 
 
 # This is for JSON API endpoint for list of sport categories
 @app.route('/sport/category/JSON')
 def categoryJSON():
     categories = session.query(Sport).all()
-    return jsonify(Sport_categories=[category.serialize for category in categories])
+    return jsonify\
+        (Sport_categories=[category.serialize for category in categories])
 
 
 # This is for JSON API endpoint for list of items in each category
 @app.route('/sport/<int:category_id>/items/JSON')
 def itemsJSON(category_id):
     items = session.query(SportItem).filter_by(sport_id=category_id)
-    return jsonify(Item_sport_category=[item.serialize for item in items])
+    return jsonify\
+        (Item_sport_category=[item.serialize for item in items])
 
 
 # This is for JSON API endpoint for description of items in each category
