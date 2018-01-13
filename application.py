@@ -1,5 +1,12 @@
-from flask import Flask, render_template, \
-    request, redirect, jsonify, url_for, flash, make_response
+from flask import (Flask,
+                   render_template,
+                   request,
+                   redirect,
+                   jsonify,
+                   url_for,
+                   flash,
+                   make_response)
+
 from functools import wraps
 
 # Session works as a dictionary storing
@@ -180,6 +187,15 @@ def fbconnect():
 
     flash("Now logged in as %s" % login_session['username'])
     return output
+
+# The Application would not be able to be used because it is still in development mode.
+# You will have to change it to Live Mode.
+# To change your app to live mode, simply do this:
+#
+# Go To developers.facebook.com/apps,
+# Select your app.
+# On the left menu panel, you should see App Review. Click that.
+# A page shows up with this info: Make [Your App Name] public?, Change it to Yes
 
 
 # Disconnecting a facebook User
